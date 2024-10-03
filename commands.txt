@@ -1,0 +1,43 @@
+# Command # 1:
+docker run -it --network=host --privileged ^
+  -v /run/desktop/mnt/host/wslg/.X11-unix:/tmp/.X11-unix ^
+  -v /run/desktop/mnt/host/wslg:/mnt/wslg ^
+  -e DISPLAY=:0 ^
+  -e WAYLAND_DISPLAY=wayland-0 ^
+  -e XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir ^
+  -e PULSE_SERVER=/mnt/wslg/PulseServer ^
+  alieimaan/iq-nano:livox_amd
+
+# Command # 2:
+export ROS_MASTER_URI=http://[local_ip of onboard computer]:[ros_port]
+source $ROSWS_SOURCE
+rviz -d $SLAM_RVIZ
+
+# Command # 3:
+sudo apt-get update
+sudo apt-get install curl -y
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Command # 4:
+sudo docker run -it --network=host --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix livox_amd
+
+# Command # 5:
+docker run --network=host --env-file path/to/envfile alieimaan/iq-nano:livox_slam
+
+# Command # 6:
+[Unit]
+Description=Docker Container for ZenaDrone IQ Nano LIVOX SLAM
+After=autonomousflight.service docker.service
+Requires=docker.service autonomousflight.service
+
+[Service]
+Restart=always
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/docker run --rm --network=host --env-file /var/zenadrone/embedded/env/.env -v /var/zenadrone/maps:/root/maps --name livox_slam alieimaan/iq-nano:livox_slam
+ExecStop=/usr/bin/docker stop alieimaan/iq-nano:livox_slam
+StandardOutput=append:/var/log/livox_slam.log
+StandardError=append:/var/log/livox_slam_err.log
+
+[Install]
+WantedBy=multi-user.target
