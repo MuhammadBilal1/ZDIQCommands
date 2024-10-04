@@ -1,0 +1,13 @@
+[Unit]
+Description=Docker Container for ZenaDrone IQ Nano LIVOX SLAM
+After=ros-mavros.service docker.service
+Requires=docker.service autonomousflight.service
+[Service]
+Restart=always
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/docker run --rm --network=host --env-file /var/zenadrone/embedded/env/.env -v /var/zenadrone/maps:/root/maps --name livox_slam alieimaan/iq-nano:livox_slam
+ExecStop=/usr/bin/docker stop alieimaan/iq-nano:livox_slam
+StandardOutput=append:/var/log/livox_slam.log
+StandardError=append:/var/log/livox_slam_err.log
+[Install]
+WantedBy=multi-user.target
