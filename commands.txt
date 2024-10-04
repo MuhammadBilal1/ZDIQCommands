@@ -20,7 +20,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
 # Command # 4:
-sudo docker run -it --network=host --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix livox_amd
+sudo docker run -it --network=host --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix alieimaan/iq-nano:livox_amd
 
 # Command # 5:
 docker run --network=host --env-file path/to/envfile alieimaan/iq-nano:livox_slam
