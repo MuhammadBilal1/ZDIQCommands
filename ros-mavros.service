@@ -1,0 +1,16 @@
+[Unit]
+Description=Run the ROS Noetic and MAVROS & Autonomous Flight Setup
+After=network.target
+Requires=network.target
+
+[Service]
+# Ensure the service restarts if it fails
+Restart=always
+ExecStart=/bin/bash -c "export ROS_MASTER_URI=http://10.255.254.14:5514 && source /opt/ros/noetic/setup.bash && roslaunch mavros px4.launch fcu_url:=/dev/ttyUSB0:921600"
+
+# Log output and errors
+StandardOutput=append:/var/log/MAVROS_autonomous_flight.log
+StandardError=append:/var/log/MAVROS_autonomous_flight_err.log
+
+[Install]
+WantedBy=multi-user.target
